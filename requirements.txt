@@ -1,0 +1,5 @@
+pandas
+scikit-learn
+joblib
+streamlit
+Flask # Although not directly used by Streamlit app, keep it if app.py remains in repo

@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Salary Predictor</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; background-color: #f4f4f4; color: #333; }
+        .container { max-width: 600px; margin: auto; padding: 25px; border: 1px solid #ddd; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); background-color: #fff; }
+        h2 { text-align: center; color: #0056b3; margin-bottom: 25px; }
+        .form-group { margin-bottom: 18px; }
+        label { display: block; margin-bottom: 6px; font-weight: bold; }
+        input[type="number"], input[type="text"], select {
+            width: calc(100% - 20px); /* Adjust for padding */
+            padding: 10px;
+            margin-bottom: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box; /* Ensures padding doesn't increase total width */
+            font-size: 1em;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1em;
+            display: block;
+            width: 100%;
+            margin-top: 25px;
+            transition: background-color 0.3s ease;
+        }
+        button:hover { background-color: #0056b3; }
+        .prediction {
+            margin-top: 30px;
+            padding: 15px;
+            background-color: #e9ecef;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #28a745; /* Green for success */
+            border: 1px solid #ced4da;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Employee Salary Prediction 💵</h2>
+        <p>Enter the details below to predict the salary bracket (<=50K or >50K).</p>
+
+        <form action="{{ url_for('predict') }}" method="post">
+
+            <div class="form-group">
+                <label for="age">Age</label>
+                <input type="number" name="age" placeholder="e.g., 38" min="17" max="90" required>
+            </div>
+
+            <div class="form-group">
+                <label for="workclass">Work Class</label>
+                <select name="workclass" required>
+                    <option value="Private">Private</option>
+                    <option value="Self-emp-not-inc">Self-emp-not-inc</option>
+                    <option value="Local-gov">Local-gov</option>
+                    <option value="Federal-gov">Federal-gov</option>
+                    <option value="State-gov">State-gov</option>
+                    <option value="Self-emp-inc">Self-emp-inc</option>
+                    <option value="Without-pay">Without-pay</option>
+                    <option value="Never-worked">Never-worked</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="fnlwgt">Final Weight (fnlwgt)</label>
+                <input type="number" name="fnlwgt" placeholder="e.g., 189000" required>
+                <small style="color: #666;">Statistical weight; usually not chosen by user.</small>
+            </div>
+
+            <div class="form-group">
+                <label for="education">Education Level</label>
+                <select name="education" required>
+                    <option value="HS-grad">HS-grad</option>
+                    <option value="Some-college">Some-college</option>
+                    <option value="Bachelors">Bachelors</option>
+                    <option value="Masters">Masters</option>
+                    <option value="Assoc-voc">Assoc-voc</option>
+                    <option value="11th">11th</option>
+                    <option value="Assoc-acdm">Assoc-acdm</option>
+                    <option value="10th">10th</option>
+                    <option value="7th-8th">7th-8th</option>
+                    <option value="Prof-school">Prof-school</option>
+                    <option value="9th">9th</option>
+                    <option value="12th">12th</option>
+                    <option value="Doctorate">Doctorate</option>
+                    <option value="5th-6th">5th-6th</option>
+                    <option value="1st-4th">1st-4th</option>
+                    <option value="Preschool">Preschool</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="educational-num">Educational Number</label>
+                <input type="number" name="educational-num" placeholder="e.g., 9" required>
+                <small style="color: #666;">Numerical representation of education level.</small>
+            </div>
+
+            <div class="form-group">
+                <label for="marital-status">Marital Status</label>
+                <select name="marital-status" required>
+                    <option value="Married-civ-spouse">Married-civ-spouse</option>
+                    <option value="Never-married">Never-married</option>
+                    <option value="Divorced">Divorced</option>
+                    <option value="Separated">Separated</option>
+                    <option value="Widowed">Widowed</option>
+                    <option value="Married-spouse-absent">Married-spouse-absent</option>
+                    <option value="Married-AF-spouse">Married-AF-spouse</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="occupation">Occupation</label>
+                <select name="occupation" required>
+                    <option value="Prof-specialty">Prof-specialty</option>
+                    <option value="Craft-repair">Craft-repair</option>
+                    <option value="Exec-managerial">Exec-managerial</option>
+                    <option value="Adm-clerical">Adm-clerical</option>
+                    <option value="Sales">Sales</option>
+                    <option value="Other-service">Other-service</option>
+                    <option value="Machine-op-inspct">Machine-op-inspct</option>
+                    <option value="Transport-moving">Transport-moving</option>
+                    <option value="Handlers-cleaners">Handlers-cleaners</option>
+                    <option value="Farming-fishing">Farming-fishing</option>
+                    <option value="Tech-support">Tech-support</option>
+                    <option value="Protective-serv">Protective-serv</option>
+                    <option value="Priv-house-serv">Priv-house-serv</option>
+                    <option value="Armed-Forces">Armed-Forces</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="relationship">Relationship</label>
+                <select name="relationship" required>
+                    <option value="Husband">Husband</option>
+                    <option value="Not-in-family">Not-in-family</option>
+                    <option value="Own-child">Own-child</option>
+                    <option value="Unmarried">Unmarried</option>
+                    <option value="Wife">Wife</option>
+                    <option value="Other-relative">Other-relative</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="race">Race</label>
+                <select name="race" required>
+                    <option value="White">White</option>
+                    <option value="Black">Black</option>
+                    <option value="Asian-Pac-Islander">Asian-Pac-Islander</option>
+                    <option value="Amer-Indian-Eskimo">Amer-Indian-Eskimo</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="gender">Gender</label>
+                <select name="gender" required>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="capital-gain">Capital Gain</label>
+                <input type="number" name="capital-gain" placeholder="e.g., 0" min="0" required>
+            </div>
+
+            <div class="form-group">
+                <label for="capital-loss">Capital Loss</label>
+                <input type="number" name="capital-loss" placeholder="e.g., 0" min="0" required>
+            </div>
+
+            <div class="form-group">
+                <label for="hours-per-week">Hours per Week</label>
+                <input type="number" name="hours-per-week" placeholder="e.g., 40" min="1" max="99" required>
+            </div>
+
+            <div class="form-group">
+                <label for="native-country">Native Country</label>
+                <select name="native-country" required>
+                    <option value="United-States">United-States</option>
+                    <option value="Mexico">Mexico</option>
+                    <option value="Philippines">Philippines</option>
+                    <option value="Germany">Germany</option>
+                    <option value="Puerto-Rico">Puerto-Rico</option>
+                    <option value="Canada">Canada</option>
+                    <option value="India">India</option>
+                    <option value="El-Salvador">El-Salvador</option>
+                    <option value="Cuba">Cuba</option>
+                    <option value="England">England</option>
+                    <option value="China">China</option>
+                    <option value="Jamaica">Jamaica</option>
+                    <option value="South">South</option>
+                    <option value="Italy">Italy</option>
+                    <option value="Dominican-Republic">Dominican-Republic</option>
+                    <option value="Japan">Japan</option>
+                    <option value="Guatemala">Guatemala</option>
+                    <option value="Columbia">Columbia</option>
+                    <option value="Poland">Poland</option>
+                    <option value="France">France</option>
+                    <option value="Haiti">Haiti</option>
+                    <option value="Portugal">Portugal</option>
+                    <option value="Taiwan">Taiwan</option>
+                    <option value="Iran">Iran</option>
+                    <option value="Nicaragua">Nicaragua</option>
+                    <option value="Peru">Peru</option>
+                    <option value="Greece">Greece</option>
+                    <option value="Ecuador">Ecuador</option>
+                    <option value="Ireland">Ireland</option>
+                    <option value="Hong">Hong</option>
+                    <option value="Cambodia">Cambodia</option>
+                    <option value="Trinadad&Tobago">Trinadad&Tobago</option>
+                    <option value="Laos">Laos</option>
+                    <option value="Thailand">Thailand</option>
+                    <option value="Yugoslavia">Yugoslavia</option>
+                    <option value="Outlying-US(Guam-USVI-etc)">Outlying-US(Guam-USVI-etc)</option>
+                    <option value="Hungary">Hungary</option>
+                    <option value="Honduras">Honduras</option>
+                    <option value="Scotland">Scotland</option>
+                </select>
+            </div>
+
+            <button type="submit">Predict Salary</button>
+        </form>
+
+        {% if prediction_text %}
+        <div class="prediction">
+            Result: {{ prediction_text }}
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>
