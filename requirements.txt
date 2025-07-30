@@ -1,5 +1,12 @@
+<<<<<<< HEAD
 pandas
 scikit-learn
 joblib
 streamlit
+=======
+pandas
+scikit-learn
+joblib
+streamlit
+>>>>>>> 7ec5e5128be2991e48c8a5c0faf09ba47827c9fc
 Flask # Although not directly used by Streamlit app, keep it if app.py remains in repo
