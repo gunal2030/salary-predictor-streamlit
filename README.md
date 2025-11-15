@@ -27,8 +27,3 @@ Matplotlib/Seaborn - For data visualization.
 
 Flask/Streamlit - For creating the web-based prediction interface.
 
-💻 Getting Started
-Prerequisites
-Python 3.8+
-
-pip
